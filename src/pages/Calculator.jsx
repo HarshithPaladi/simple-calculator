@@ -12,30 +12,45 @@ function Calculator() {
 			let result;
 
 			switch (operator) {
-				case '+':
+				case "+":
 					result = num1 + num2;
 					break;
-				case '-':
+				case "-":
 					result = num1 - num2;
 					break;
-				case 'x':
+				case "x":
 					result = num1 * num2;
 					break;
-				case '/':
+				case "/":
 					result = num1 / num2;
 					break;
 				default:
 					break;
 			}
-			setResult(result);
+			if (isFinite(result)) {
+				setResult(result);
+			} else if (isNaN(result)) {
+				setResult("Not Possible");
+			} else {
+				setResult(result.toString());
+			}
 		}
 	};
 
 	const reset = () => {
-		setNumber1('');
-		setNumber2('');
-		setResult('');
+		setNumber1("");
+		setNumber2("");
+		setResult("");
+	};
+
+async function copyToClipboard() {
+	if ("clipboard" in navigator) {
+		return await navigator.clipboard.writeText(result);
+	} else {
+		return document.execCommand("copy", true, result);
 	}
+}
+
 	return (
 		<div className="calc_container">
 			<h1>Simple Calculator</h1>
@@ -64,11 +79,14 @@ function Calculator() {
 			</div>
 			<div className="result_area">
 				<input
-					type="number"
 					name="Result"
 					id="Result"
 					value={result}
-					onChange={(e) => { setResult(e.target.value); }}
+					onChange={(e) => {
+						setResult(e.target.value);
+					}}
+					// add on every click event to copy the result to clipboard
+					onClick={copyToClipboard}
 					placeholder="Result"
 					readOnly
 				/>
