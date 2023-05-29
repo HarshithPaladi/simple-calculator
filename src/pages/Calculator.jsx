@@ -43,13 +43,29 @@ function Calculator() {
 		setResult("");
 	};
 
-async function copyToClipboard() {
-	if ("clipboard" in navigator) {
-		return await navigator.clipboard.writeText(result);
+const copyToClipboard = (e) => {
+	e.target.select();
+
+	if (navigator.clipboard && navigator.clipboard.writeText) {
+		navigator.clipboard
+		.writeText(e.target.value)
+		.then(() => {
+			console.log("Copied to clipboard");
+		})
+		.catch((error) => {
+			console.error("Failed to copy to clipboard:", error);
+		});
+		// alert("Copied to clipboard: "+ e.target.value);
 	} else {
-		return document.execCommand("copy", true, result);
+		// Fallback for older browsers
+		document.execCommand("copy");
+		console.log("Copied to clipboard (fallback)");
+		// alert("Copied to clipboard (fallback)");
 	}
-}
+};
+
+
+
 
 	return (
 		<div className="calc_container">
